@@ -29,12 +29,10 @@ import (
 // @Param    type 			  formData true               true  "type"
 // @Param    tag 			  formData true               true  "tag"
 func UploadFile(ctx *gin.Context) {
-	fmt.Println("upload file ....................")
 	var request models.RequestStore
 
 	err := ctx.ShouldBind(&request)
 	if err != nil {
-		println("hereeeeeeeeeeeeeeeeeeee ", err.Error())
 		ctx.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
@@ -82,6 +80,7 @@ func StoreMultiPartFile(ctx *gin.Context) (models.FileGorm, []models.TagGorm, []
 			logrus.Error(merr.Error())
 			return fileGormObj, allTagGormObj, fileTagGormObj, "Storge path not exists"
 		}
+		filePathInfo, _ = os.Stat(configs.Env.StoragePath)
 	}
 	if filePathInfo.Size() > int64(configs.Env.MaxStorageSize*1024*1024) {
 		return fileGormObj, allTagGormObj, fileTagGormObj, "Storage path capacity exceeds max size"
@@ -102,7 +101,8 @@ func StoreMultiPartFile(ctx *gin.Context) (models.FileGorm, []models.TagGorm, []
 	defer csvFileToImport.Close()
 
 	//Create temp file
-	tempFile, err := os.CreateTemp(configs.Env.StoragePath, strings.Replace(uuid.New().String(), "-", "", -1))
+	// tempFile, err := os.CreateTemp(configs.Env.StoragePath, strings.Replace(uuid.New().String(), "-", "", -1))
+	tempFile, err := os.Create(filePathVal)
 
 	if err != nil {
 		logrus.Error(err.Error())

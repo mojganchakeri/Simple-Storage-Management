@@ -2,13 +2,13 @@ package controller
 
 import (
 	"fmt"
-	"net/http"
 	"retreival_service/configs"
+	"retreival_service/internal"
 
 	"github.com/gin-gonic/gin"
 )
 
 func UploadController(ctx *gin.Context) {
-	storeServiceAddress := fmt.Sprintf("http://%s:%s/api/v1/upload", configs.Env.StoreServiceHost, configs.Env.StoreServicePort)
-	ctx.Redirect(http.StatusMovedPermanently, storeServiceAddress)
+	storeServiceAddress := fmt.Sprintf("%s:%s", configs.Env.StoreServiceHost, configs.Env.StoreServicePort)
+	internal.ReverseProxy(ctx, storeServiceAddress, "/api/v1/upload")
 }

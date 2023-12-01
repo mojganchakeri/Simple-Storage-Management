@@ -33,11 +33,12 @@ func SetupServer() {
 
 	v1.POST("/register", controller.RegisterController)
 	v1.POST("/login", controller.LoginController)
-	v1.POST("/refresh", controller.RefreshController)
+	
 
 	auth := v1.Group("")
 	auth.Use(middleware.JwtAuthMiddleware(configs.Env.AccessTokenSecret))
 	{
+		auth.POST("/refresh", controller.RefreshController)
 		auth.POST("/logout", controller.LogoutController)
 
 		store := auth.Group("/store")

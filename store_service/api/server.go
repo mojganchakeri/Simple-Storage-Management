@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"os"
 
 	"store_service/api/controller"
@@ -9,13 +8,12 @@ import (
 	"store_service/configs"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/swag/example/basic/docs"
 )
 
-func SetupServer() {
+func SetupServer() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	os.Setenv("GIN_MODE", "release")
 	r := gin.New()
@@ -38,6 +36,5 @@ func SetupServer() {
 			v1.POST("/retrieve", controller.RetrieveFile)
 		}
 	}
-	logrus.Info(fmt.Sprintf("service starts at %s", configs.Env.ServerAddress))
-	r.Run(configs.Env.ServerAddress)
+	return r
 }

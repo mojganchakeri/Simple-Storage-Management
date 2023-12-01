@@ -54,8 +54,8 @@ type SchemaStoreTag struct {
 	ID      string        `gorm:"column:id;type:varchar(100);primary_key" json:"id"`
 	TagId   string        `gorm:"column:tag_id;type:varchar(100)" json:"tag_id"`
 	FileId  string        `gorm:"column:file_id;type:varchar(100)" json:"file_id"`
-	Tag     SchemaTag     `gorm:"joinForeignKey:tag_id;foreignKey:TagId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:"tag"`
-	Storage SchemaStorage `gorm:"joinForeignKey:file_id;foreignKey:FileId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL" json:"storage"`
+	Tag     SchemaTag     `gorm:"joinForeignKey:tag_id;foreignKey:TagId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"tag"`
+	Storage SchemaStorage `gorm:"joinForeignKey:file_id;foreignKey:FileId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"storage"`
 }
 
 // TableName get sql table name

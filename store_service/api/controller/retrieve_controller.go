@@ -40,6 +40,11 @@ func RetrieveFile(ctx *gin.Context) {
 		return
 
 	}
+	if len(filesPath) == 0 {
+		logrus.Error("no file exists")
+		ctx.JSON(http.StatusBadGateway, models.ErrorResponse{Error: "No file exists"})
+		return
+	}
 
 	zipPath, zerr := readFiles(filesPath)
 	if zerr != nil {
@@ -89,7 +94,6 @@ func readFiles(filesPath []string) (string, error) {
 
 		// Encrypt the file contents
 		decreptedData := internal.Decrypt(string(fileBytes))
-
 		// Get main path
 		// fpathSplits := strings.Split(fpath, "/")
 		// mainPath := configs.Env.StoragePath
@@ -108,8 +112,12 @@ func readFiles(filesPath []string) (string, error) {
 		_, err = tempFile.Write(decreptedData)
 		if err != nil {
 			logrus.Error(err.Error())
-			fixFiles = append(fixFiles, fpath)
+			// fixFiles = append(fixFiles, fpath)
+
 		}
+
+		fixFiles = append(fixFiles, fpath)
+
 	}
 
 	zipPath, zerr := makeZip(fixFiles)
@@ -137,6 +145,7 @@ func makeZip(filesPath []string) (string, error) {
 	fixedFilePath := []string{}
 
 	for _, fname := range filesPath {
+		println("fname ........... ", fname)
 		f1, err := os.Open(fname)
 		if err != nil {
 			logrus.Error(fmt.Sprintf("Reading file %s is distrupted", fname))

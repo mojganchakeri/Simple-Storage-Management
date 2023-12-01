@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"store_service/api"
 	"store_service/bootstrap"
 	"store_service/configs"
 	repository "store_service/repository"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -19,6 +22,8 @@ func main() {
 	repository.SetClient()
 
 	// 4. Setup server
-	api.SetupServer()
+	server := api.SetupServer()
 
+	logrus.Info(fmt.Sprintf("service starts at %s", configs.Env.ServerAddress))
+	server.Run(configs.Env.ServerAddress)
 }
