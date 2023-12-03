@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	SwaggerEnable = true
+	SwaggerEnable = false
 	StoreTable    = "storage"
 	TagTable      = "tag"
 	StoreTagTable = "store_tag"

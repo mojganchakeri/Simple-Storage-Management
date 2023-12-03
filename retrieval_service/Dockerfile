@@ -1,15 +1,16 @@
 FROM golang:bookworm AS download
 WORKDIR /app
-COPY retrieval_service/go.mod retrieval_service/go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
 FROM golang:bookworm AS build
 WORKDIR /app
-COPY . .
+COPY . ./
+RUN ["ls"]
 COPY --from=download /go/pkg /go/pkg
-RUN go build -o retreival_service retrieval_service/cmd/main.go
+RUN go build -o retrieval_service cmd/main.go
 FROM debian:bookworm
 WORKDIR /
-COPY retrieval_service/retrieval-service.yaml /retrieval-service.yaml
-COPY --from=build /app/retreival_service /retreival_service
-EXPOSE 5001
-CMD ["/retreival_service"]
+COPY retrieval-service.yaml /retrieval-service.yaml
+COPY --from=build /app/retrieval_service /retrieval_service
+EXPOSE 5000
+CMD ["./retrieval_service"]

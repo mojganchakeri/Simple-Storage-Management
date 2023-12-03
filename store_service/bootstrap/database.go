@@ -12,7 +12,6 @@ import (
 
 // Gorm setup
 func dbConnection(dsn string) (sqlClient models.SqlClient, ok bool) {
-
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {

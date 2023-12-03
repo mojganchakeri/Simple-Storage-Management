@@ -5,7 +5,7 @@ import (
 	"store_service/bootstrap"
 	"store_service/configs"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +16,7 @@ type Repository struct {
 var DBClient = &Repository{}
 
 func SetClient() {
-	log.Info(fmt.Sprintf("connecting to database - host: %s, port: %s, dbname: %s", configs.Env.DBHost, configs.Env.DBPort, configs.Env.DBName))
+	logrus.Info(fmt.Sprintf("connecting to database - host: %s, port: %s, dbname: %s", configs.Env.DBHost, configs.Env.DBPort, configs.Env.DBName))
 	dbClient := bootstrap.ConnectDatabaseMariadb(
 		configs.Env.DBUser,
 		configs.Env.DBPass,
