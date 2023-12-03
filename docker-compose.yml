@@ -18,7 +18,7 @@ services:
       - DB_HOST=mariadb
       - DB_PORT=3306
       - LOG_LEVEL=warning
-      - STORAGE_PATH=/var/lib/store/
+      - STORAGE_PATH=store/
       - MAX_STORAGE_SIZE=300
       - MAX_FILE_SIZE=10
     ports:

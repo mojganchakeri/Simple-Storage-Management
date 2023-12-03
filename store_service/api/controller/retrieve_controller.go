@@ -145,7 +145,6 @@ func makeZip(filesPath []string) (string, error) {
 	fixedFilePath := []string{}
 
 	for _, fname := range filesPath {
-		println("fname ........... ", fname)
 		f1, err := os.Open(fname)
 		if err != nil {
 			logrus.Error(fmt.Sprintf("Reading file %s is distrupted", fname))
