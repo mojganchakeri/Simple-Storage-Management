@@ -2,23 +2,33 @@ package bootstrap
 
 import (
 	"retreival_service/internal/models"
+	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func SetupEnv() (env models.Env) {
-	viper.SetConfigFile(".env")
+	v := viper.New()
+	v.SetConfigFile("/retrieval-service.yaml")
+	v.SetConfigType("yaml")
 
-	err := viper.ReadInConfig()
+	err := v.ReadInConfig()
 	if err != nil {
-		log.Fatal("Can't find the file .env : ", err)
+		logrus.Fatal("Can't find the file yaml : ", err)
+	}
+	v.AutomaticEnv()
+
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	if err = v.MergeInConfig(); err != nil {
+		logrus.Fatal("Environment can't be loaded: ", err)
+	}
+	err = v.Unmarshal(&env)
+	if err != nil {
+		logrus.Fatal("Environment can't be loaded: ", err)
 	}
 
-	err = viper.Unmarshal(&env)
-	if err != nil {
-		log.Fatal("Environment can't be loaded: ", err)
-	}
+	logrus.Infof("config loaded: %+v", env)
 
 	return env
 }

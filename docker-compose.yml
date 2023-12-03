@@ -1,0 +1,68 @@
+version: "3.3"
+
+services:
+  store:
+    image: store
+    build: 
+      context: .
+      dockerfile: store_service/Dockerfile
+    restart: unless-stopped
+    container_name: store
+    environment:
+      - SERVER_ADDRESS=http://localhost:5001
+      - PORT=5001
+      - CONTEXT_TIMEOUT=30
+      - DB_NAME=storage_management
+      - DB_USER=root
+      - DB_PASS=password
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - LOG_LEVEL=warning
+      - STORAGE_PATH=/var/lib/store/
+      - MAX_STORAGE_SIZE=300
+      - MAX_FILE_SIZE=10
+    ports:
+      - "$PORT:$PORT"
+    depends_on:
+      - mariadb
+  
+  retreival:
+    image: retreival
+    build: 
+      context: .
+      dockerfile: retrieval_service/Dockerfile
+    restart: unless-stopped
+    container_name: retreival
+    environment:
+      - SERVER_ADDRESS= http://localhost:5000
+      - PORT=5000
+      - CONTEXT_TIMEOUT=2
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASS=password
+      - DB_NAME=user_management
+      - ACCESS_TOKEN_EXPIRY_HOUR=2
+      - REFRESH_TOKEN_EXPIRY_HOUR=168
+      - ACCESS_TOKEN_SECRET=access_token_secret
+      - REFRESH_TOKEN_SECRET=refresh_token_secret
+      - LOG_LEVEL=info
+      - STORE_SERVICE_HOST=store
+      - STORE_SERVICE_PORT=5001
+    ports:
+      - "$DB_PORT:$DB_PORT"
+    depends_on:
+      - mariadb
+      - store
+   
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: $DB_PASS
+      MARIADB_DATABASE: $DB_NAME
+      MARIADB_USER: $DB_USER
+      MARIADB_PASSWORD: $DB_PASS
+      MARIADB_PORT: $DB_PORT
+    ports:
+      - "$DB_PORT:$DB_PORT"
